@@ -11,7 +11,7 @@ helm:
   chart: "kubed"
 
   # An https to a valid Helm repository to download the chart from
-  repo: "https://github.com/kubeops/config-syncer/tree/master/charts"
+  repo: "https://charts.appscode.com/stable/"
 
   # Used if repo is set to look up the version of the chart
   version: ""
