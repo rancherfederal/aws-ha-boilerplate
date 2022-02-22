@@ -24,7 +24,12 @@ helm:
   timeoutSeconds: 0
 
   # Custom values that will be passed as values.yaml to the installationk
-  targetCustomizations:
-    installCRD: true
-    extraArgs: |
-      --enable-certificate-owner-ref=true
+  values:
+    global:
+      installCRD: true
+      extraArgs: |
+        --enable-certificate-owner-ref=true
+
+
+# need to add crds
+# kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.1/cert-manager.crds.yaml
