@@ -1,0 +1,90 @@
+## Default values for Epinio Helm Chart.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+
+# The email address you are planning to use for getting notifications about your certificates.
+email: "epinio@suse.com"
+# The URL of the container registry from where to pull container images
+# for the various created Pods. Don't confuse this registry with the "Epinio
+# registry" which is the one where Epinio stores the application images.
+registryURL: ""
+# The domain that will be used to access the epinio API server
+domain: ""
+image:
+  epinio:
+    repository: ghcr.io/epinio/epinio-server
+    tag: ""
+  bash:
+    repository: library/bash
+    tag: 5.1.4
+  awscli:
+    repository: amazon/aws-cli
+    tag: 2.0.52
+  kubectl:
+    repository: lachlanevenson/k8s-kubectl
+    tag: v1.22.2
+server:
+  # Domain which serves the Rancher UI (to access the API)
+  accessControlAllowOrigin: ""
+  # increase this value to increase all timeouts by the same factor
+  timeoutMultiplier: 1
+  # Change this to a random string. Used for session cookies by the API server.
+  sessionKey: "12345"
+  # The name of the cluster issuer to use.
+  # Epinio creates three options: 'epinio-ca', 'letsencrypt-production', and 'selfsigned-issuer'.
+  tlsIssuer: "letsencrypt-production"
+  # Increase this value to instruct the API server to produce more debug output
+  traceLevel: 0
+certManagerNamespace: "cert-manager"
+
+
+# Connection details for the S3 storage
+# need to make this
+s3:
+  endpoint: s3.amazonaws.com
+  bucket: ""
+  region: ""
+  accessKeyID: ""
+  secretAccessKey: ""
+  useSSL: true
+# Connection details for the container registry
+registry:
+  url: ""
+  localhostURL: ""
+  username: ""
+  password: ""
+  # The registry namespace (aka org). Don't confuse this with Kubernetes
+  # namespaces. This one is just the part between the registry url and the
+  # image name (e.g. your username if you are using your account on Dockerhub).
+  namespace: ""
+  # The secret used by the staging job to validate the registry's certificate.
+  # If provided, it will be mounted inside the staging pod so that the pod can
+  # trust it when pushing the generated image.
+  certificateSecret: ""
+  # The namespace in which the above secret is stored
+  # When set, the epinio-staging namespace will be annotated so that any secret
+  # annotated with:
+  #    "kubed.appscode.com/sync": "kubed-registry-tls-from=the_value_below"
+  # will be copied there. The registry certificate should have such an annotation
+  # if you are deploying one on the cluster.
+  certificateSecretNamespace: ""
+api:
+  # Default user username
+  username: admin
+  # Default user password
+  password: password
+
+# Minio subchart values
+minio:
+  enabled: true
+  existingSecret: minio-creds
+  persistence:
+    size: 2Gi
+  drivesPerNode: 4
+  replicas: 1
+  resources:
+    requests:
+      memory: 1Gi
+  makeUserJob:
+    podAnnotations:
+      linkerd.io/inject: disabled
